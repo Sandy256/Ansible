@@ -1,0 +1,4 @@
+---
+ ansible_user             : ubuntu
+ ansible_ssh_private_key  : /home/ubuntu/.ssh/id_rsa
+...
