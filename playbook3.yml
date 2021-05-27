@@ -7,21 +7,43 @@
   vars:
     source_file: ~/MyWebSite/
     destin_file: /var/www/html
-
-  tasks:
-  - name: Install Apache Web Server
-    apt: name=apache2 state=latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: Copy MyWebSite to Servers
-    copy: src={{ source_file }} dest={{ destin_file }} mode=0555
-    notify: Restart Apache
-
-  - name: Start Web Server and make it enable on boot
-    service: name=apache2 state=started enabled=yes
-
   
+  tasks:
+  - name: Check OS
+    debug: 
+      var: ansible_os_family
+  
+  - block: #Block for Ubuntu
+    
+    - name: Install Apache Web Server for Ubuntu
+      apt: name=apache2 state=latest
+
+    - name: Start Web Server and make it enable on boot for Ubuntu
+      service: name=apache2 state=started enabled=yes
+    
+    - name: Copy MyWebSite to Servers
+      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+      notify: Restart Apache Ubuntu
+
+    when: ansible_os_family == "Debian"
+
+  - block: #Block for RHEL
+
+    - name: Install Apache Web Server for RHEL
+      yum: name=httpd state=latest
+
+    - name: Start Web Server and make it enable on boot for RHEL
+      service: name=httpd state=started enabled=yes
+
+    - name: Copy MyWebSite to Servers
+      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+      notify: Restart Apache RHEL
+  
+    when: ansible_os_family == "RedHat"
+
   handlers:
-  - name: Restart Apache
+  - name: Restart Apache Ubuntu
     service: name=apache2 state=restarted
+  - name: Restart Apache RHEL
+    service: name=httpd state=restarted
 ...

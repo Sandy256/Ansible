@@ -7,3 +7,6 @@ nix1  ansible_host=18.184.171.196  owner=Vasya
 nix2  ansible_host=35.159.51.245    owner=Petya
 nix3  ansible_host=18.195.228.126   owner=Nick
 
+[test_servers]
+
+nix4  ansible_host=3.67.220.89 ansible_user=ec2-user
