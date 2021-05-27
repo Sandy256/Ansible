@@ -1,0 +1,13 @@
+---
+- name: Loops Playbook
+  hosts: nix4
+  become: yes
+
+
+  tasks:
+    - name: Say hello to all
+      debug: msg="Hello {{ item }}"
+      loop: 
+        - "Vasya"
+        - "Olga"
+        - "Misha"
