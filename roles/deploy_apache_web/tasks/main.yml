@@ -1,14 +1,5 @@
-
 ---
-- name: Install Apache and Upload my Web Page
-  hosts: all
-  become: yes
-
-  vars:
-    source_file: ~/MyWebSite/
-    destin_file: /var/www/html
-  
-  tasks:
+# tasks file for deploy_apache_web
   - name: Check OS
     debug: 
       var: ansible_os_family
@@ -22,7 +13,7 @@
       service: name=apache2 state=started enabled=yes
     
     - name: Copy MyWebSite to Ubuntu Servers
-      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+      copy: src=MyWebSite/ dest={{ destin_file }} mode=0555
       notify: Restart Apache Ubuntu
 
     when: ansible_os_family == "Debian"
@@ -36,23 +27,13 @@
       service: name=httpd state=started enabled=yes
 
     - name: Copy MyWebSite to RHEL  Servers
-      copy: src={{ source_file }} dest={{ destin_file }} mode=0555
+      copy: src=MyWebSite/ dest={{ destin_file }} mode=0555
       notify: Restart Apache RHEL
   
     when: ansible_os_family == "RedHat"
 
   - name: Generate index.html file
-    template: src={{ source_file }}/index.j2 dest={{ destin_file }}/index.html mode=0555
+    template: src=index.j2 dest={{ destin_file }}/index.html mode=0555
     notify:
      - Restart Apache Ubuntu
      - Restart Apache RHEL
-
-  handlers:
-  - name: Restart Apache Ubuntu
-    service: name=apache2 state=restarted
-    when: ansible_os_family == "Debian"  
-
-  - name: Restart Apache RHEL
-    service: name=httpd state=restarted
-    when: ansible_os_family == "RedHat"
-...

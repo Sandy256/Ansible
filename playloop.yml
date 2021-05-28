@@ -11,3 +11,23 @@
         - "Vasya"
         - "Olga"
         - "Misha"
+
+    - name: Loop Until
+      shell: echo -n Z >> file.txt && cat file.txt
+      register: output
+      delay: 2
+      retries: 10
+      until: output.stdout.find("ZZZZ") == false
+
+    - name: Print output
+      debug:
+        var: output.stdout
+    
+
+    - name: Install many packaget
+      yum: name={{ item }} state=installed
+      loop: 
+         - python
+         - tree
+         - mysql
+
